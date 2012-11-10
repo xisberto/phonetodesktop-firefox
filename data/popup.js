@@ -1,6 +1,7 @@
 //var oauth = chrome.extension.getBackgroundPage().oauth;
 
 function saveListId() {
+    console.log("start saveListId");
     var url = "https://www.googleapis.com/tasks/v1/users/@me/lists";
     var request = {
         'method': 'GET'
@@ -19,7 +20,8 @@ function saveListId() {
             alertNoList();
         }
     };
-    oauth.sendSignedRequest(url, oauth_callback, request);
+    
+    //oauth.sendSignedRequest(url, oauth_callback, request);
 }
 
 function handle_list_id_updated(e) {
@@ -29,13 +31,16 @@ function handle_list_id_updated(e) {
 }
 
 function loadTasks() {
+    console.log("Start loadTasks");
     var list_id = localStorage.getItem('list_id');
+    console.log("list_id: "+list_id);
     if (list_id == null){
-        chrome.extension.getBackgroundPage().addEventListener("storage", handle_list_id_updated, false);
+        window.addEventListener("storage", handle_list_id_updated, false);
+        console.log("evento registrado");
         saveListId();
         return;
     } else {
-        chrome.extension.getBackgroundPage().removeEventListener("storage", handle_list_id_updated, false);
+        window.removeEventListener("storage", handle_list_id_updated, false);
         var url = "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks";
         var request = {
             'method': 'GET'
@@ -132,6 +137,5 @@ $(document).ready(function(){
     $("#about_message").linkify(function(links){
         links.attr("target", "_blank");
     });
-    alertNoList();
-//    loadTasks();
+    loadTasks();
 });
