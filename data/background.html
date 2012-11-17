@@ -1,10 +1,21 @@
 <html>
 <head>
+	<script src="credentials-dev.js"></script>
+    <script src="https://apis.google.com/js/client.js?onload=OnLoadGoogleAPI"></script>
     <script type="text/javascript">
+    	function OnLoadGoogleAPI() {
+            addon.port.emit('background', 'Google API loading');
+            gapi.client.load('tasks', 'v1', function() { 
+            	addon.port.emit('background', 'Tasks loaded');
+        	});
+        }
         
+        addon.port.emit('background', 'Background loaded');
+        OnLoadGoogleAPI();
+		addon.port.emit('background', 'Google API loaded');
+		
     </script>
 </head>
 <body>
-    Teste
 </body>
 </html>

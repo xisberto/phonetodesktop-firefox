@@ -1,27 +1,63 @@
-//var oauth = chrome.extension.getBackgroundPage().oauth;
+/*
+var addon = new Object();
+addon.port = new Object();
+addon.port.emit = function(tag, what){ console.log(what); };
+addon.port.on = function(tag, callback){ callback(); };
+//*/
+
+var list_id = "";
+addon.port.on('load-list-id', function(new_id){
+	list_id = new_id;
+});
+
+function handleAuthResult(authResult) {
+	addon.port.emit('log', 'Starting handleAuthResult');
+	addon.port.emit('log', "authResult: "+JSON.stringify(authResult));
+	var btn_auth = $("#btn_auth");
+	if (authResult && !authResult.error) {
+		btn_auth.style.visibility = 'hidden';
+		gapi.client.load('tasks', 'v1', function() { 
+			addon.port.emit('log', 'Tasks loaded');
+			loadTasks();
+		});
+		addon.port.emit('log', 'Google API loaded');
+	} else {
+		btn_auth.style.visibility = '';
+    	$("#actionbar_tab a[href='#tab_authorize']").tab('show');
+		btn_auth.conclick = handleAuthClick;
+	}
+}
+
+function OnLoadGoogleAPI() {
+	addon.port.emit('log', 'Google API loading');
+	gapi.client.setApiKey(apiKey);
+	gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, handleAuthResult);
+}
+
+function handleAuthClick(event) {
+	addon.port.emit('log', 'Starting handleAuthClick');
+	gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, handleAuthResult);
+	return false;
+}
 
 function saveListId() {
-    console.log("start saveListId");
+    addon.port.emit('log',"Start saveListId");
     var url = "https://www.googleapis.com/tasks/v1/users/@me/lists";
-    var request = {
-        'method': 'GET'
-    };
-    var oauth_callback = function(resp, xhr) {
-        resp = JSON.parse(resp);
+    var request = gapi.client.tasks.tasklists.list();
+    var callback = function(resp) {
+    	addon.port.emit('log', "resposta: "+JSON.stringify(resp));
         var lists = resp.items;
         for (i in lists) {
-            console.log("Lista: "+lists[i].title);
+            addon.port.emit('log',"Lista: "+lists[i].title);
             if (lists[i].title == "PhoneToDesktop") {
-                localStorage.setItem('list_id', lists[i].id);
+                addon.port.emit('save-list-id', lists[i].id);
             }
         }
-        console.log('lista salva no localStorage: '+localStorage.getItem('list_id'));
-        if (localStorage.getItem('list_id') == null) {
-            alertNoList();
-        }
+        //if (localStorage.getItem('list_id') == null) {
+        //    alertNoList();
+        //}
     };
-    
-    //oauth.sendSignedRequest(url, oauth_callback, request);
+    request.execute(callback);
 }
 
 function handle_list_id_updated(e) {
@@ -31,12 +67,9 @@ function handle_list_id_updated(e) {
 }
 
 function loadTasks() {
-    console.log("Start loadTasks");
-    var list_id = localStorage.getItem('list_id');
-    console.log("list_id: "+list_id);
-    if (list_id == null){
-        window.addEventListener("storage", handle_list_id_updated, false);
-        console.log("evento registrado");
+    addon.port.emit('log',"Start loadTasks");
+    addon.port.emit('log',"list_id: "+list_id);
+    if (list_id == ""){
         saveListId();
         return;
     } else {
@@ -123,7 +156,8 @@ function listTasks(tasks) {
     $("#actionbar_tab a[href='#tab_list']").tab('show');
 }
 
-$(document).ready(function(){
+function main(){
+    //$("#actionbar_tab a[href='#tab_wait']").tab('show');
     $("#actionbar_tab a").click(function(e){
         e.preventDefault();
         $(this).tab('show');
@@ -137,5 +171,11 @@ $(document).ready(function(){
     $("#about_message").linkify(function(links){
         links.attr("target", "_blank");
     });
-    loadTasks();
+    $("#btn_auth").click(handleAuthClick);
+    
+	OnLoadGoogleAPI();
+    //loadTasks();
+};
+addon.port.on('start_main', function(){
+	main();
 });

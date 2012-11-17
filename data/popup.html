@@ -31,7 +31,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 
     <section id="main_screen" class="container-fluid">
         <div class="tab-content">
-            <div class="tab-pane active" id="tab_wait">
+            <div class="tab-pane" id="tab_wait">
                 <img src="images/spinner.gif" />
             </div>
             <div class="tab-pane" id="tab_list">
@@ -45,16 +45,22 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
                     <p data-l10n-id="about_message2"></p>
                 </div>
             </div>
+            <div class="tab-pane active" id="tab_authorize">
+            	<p class="center" data-l10n-id="need_authorize"></p>
+            	<button id="btn_auth" data-l10n-id="btn_authorize"></button>
+            	<p id="url_response"></p>
+            </div>
         </div>
     </section>
     
     
-<!-- Placed at the end of the document so the pages load faster --
+<!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://apis.google.com/js/client.js?onload=OnLoadGoogleAPI"></script> 
     <script src="bootstrap/js/jquery.js"></script>
     <script src="bootstrap/js/bootstrap.js"></script>
     <script src="bootstrap/js/jquery.linkify-1.0.js"></script>
+	<script src="credentials-dev.js"></script>
     <script src="popup.js"></script>
-    <script src="https://apis.google.com/js/client.js?onload=OnLoadGoogleAPI"></script>
 <!-- -->
 </body>
 </html>
