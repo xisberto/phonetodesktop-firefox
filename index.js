@@ -24,7 +24,12 @@ var panel = panels.Panel({
     height: 480,
     width: 320,
     contentURL: "./popup.html",
-    contentScriptFile: "./panel.js",
+    contentScriptFile: [
+        "./bootstrap/js/jquery-2.1.4.min.js",
+        "./bootstrap/js/bootstrap.js",
+        "./js/Autolinker.js",
+        "./popup.js"
+    ],
     onHide: onPanelHide
 });
 
@@ -42,7 +47,7 @@ function onPanelHide() {
     button.state('window', {checked: false});
 }
 
-function checkAuth() {
+function authorize() {
     console.log("checking auth");
     var oauth2_options = {
         client_id: "396885376537-avfrd05q028n6bo2fpi6p26sarqo4822.apps.googleusercontent.com",
@@ -83,33 +88,58 @@ function saveListId(access_token) {
     }).get();
 }
 
+panel.port.on("get-tasks", function() {
+    getTasks();
+});
+
 function getTasks() {
     var token = ss.storage.access_token;
     var list_id = ss.storage.list_id;
     if (token == undefined || list_id == undefined) {
-        panel.port.emit("panel-opened", false);
+        panel.port.emit("alert-auth");
     } else {
-        panel.port.emit("panel-opened", true);
         request.Request({
             url: "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks",
             headers: {
                 "Authorization": "Bearer " + token
             },
             onComplete: function(resp) {
+                if (resp.status == 401) {
+                    panel.port.emit("alert-auth");
+                }
                 panel.port.emit("load-list", resp.json.items);
             }
         }).get();    
     }
 }
 
-panel.port.on("check-auth", function (){
-    panel.hide();
-    checkAuth();
+panel.port.on("delete", function(task_id) {
+    var token = ss.storage.access_token;
+    var list_id = ss.storage.list_id;
+    if (token == undefined || list_id == undefined) {
+        panel.port.emit("alert-auth");
+    } else {
+        request.Request({
+            url: "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks/"+task_id,
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        }).delete();
+    }
 });
 
-panel.port.on("logout", function(){
+function logout() {
     delete ss.storage.list_id;
     delete ss.storage.access_token;
     delete ss.storage.refresh_token;
-    panel.port.emit("panel-opened", false);
+}
+
+panel.port.on("authorize", function (){
+    panel.hide();
+    authorize();
+});
+
+panel.port.on("logout", function(){
+    logout();
+    panel.port.emit("alert-auth");
 });
