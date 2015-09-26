@@ -13,25 +13,25 @@ function delete_item(event){
 }
 
 self.port.on("alert-auth", function() {
-    $("#task_list").empty();
-    linear_layout = $("<div class='linear_layout min_height'>");
-    message_authorize = $("<p>");
-    message_authorize.text(chrome.i18n.getMessage("needAuthorizeApp"));
-    message_authorize.linkify({
-        target: "_blank"
-    });
-    
-    message_reset = $("<p>");
-    message_reset.text(chrome.i18n.getMessage("needResetConf"));
-    button_reset = $("<a class='btn btn-default'>");
-    button_reset.text(chrome.i18n.getMessage("reset_configuration"));
-    button_reset.click(reset_configuration);
-    message_reset.append(button_reset);
-    
-    linear_layout.append(message_authorize);
-    linear_layout.append(message_reset);
-    linear_layout.appendTo($("#task_list"));
-    $("#actionbar_tab a[href='#tab_list']").tab('show');
+//    $("#task_list").empty();
+//    linear_layout = $("<div class='linear_layout min_height'>");
+//    message_authorize = $("<p>");
+//    message_authorize.text(_("needAuthorizeApp"));
+//    message_authorize.linkify({
+//        target: "_blank"
+//    });
+//    
+//    message_reset = $("<p>");
+//    message_reset.text(_("needResetConf"));
+//    button_reset = $("<a class='btn btn-default'>");
+//    button_reset.text(_("reset_configuration"));
+//    button_reset.click(reset_configuration);
+//    message_reset.append(button_reset);
+//    
+//    linear_layout.append(message_authorize);
+//    linear_layout.append(message_reset);
+//    linear_layout.appendTo($("#task_list"));
+    $("#actionbar_tab a[href='#tab_alert']").tab('show');
 });
 
 self.port.on("load-list", function(tasks) {
@@ -62,18 +62,11 @@ self.port.on("load-list", function(tasks) {
 });
 
 function prepareHTMLTexts(){
-    $("a[href='#tab_list']").text(chrome.i18n.getMessage("tab_list"));
-    $("a[href='#tab_about']").text(chrome.i18n.getMessage("tab_about"));
-    $("#btn_reset").text(chrome.i18n.getMessage("reset_configuration"));
 	var autolinker = new Autolinker();
-	var message1_text = autolinker.link(chrome.i18n.getMessage("about_message1"));
-	var message2_text = autolinker.link(chrome.i18n.getMessage("about_message2"));
-    $("<p>")
-        .html(message1_text)
-        .appendTo($("#about_message"));
-    $("<p>")
-        .html(message2_text)
-        .appendTo($("#about_message"));
+    $("#about_message #1").html(autolinker.link($("#about_message #1").html()));
+    $("#about_message #2").html(autolinker.link($("#about_message #2").html()));
+    $("#needAuthorizeApp").html(autolinker.link($("#needAuthorizeApp").html()));
+    $("#needResetConf").html(autolinker.link($("#needResetConf").html()));
 }
 
 $(document).ready(function(){
@@ -89,5 +82,5 @@ $(document).ready(function(){
         self.port.emit("logout");
         self.port.emit("authorize");
     });
-//    prepareHTMLTexts();
+    prepareHTMLTexts();
 });

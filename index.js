@@ -4,6 +4,7 @@ var self = require('sdk/self');
 var ss = require('sdk/simple-storage');
 var request = require('sdk/request');
 var oauth = require('addon-google-oauth2')
+var _ = require("sdk/l10n").get;
 
 console.log("init");
 
@@ -46,6 +47,12 @@ function showPanel(state) {
 function onPanelHide() {
     button.state('window', {checked: false});
 }
+
+panel.port.on("_", function(l10n_id, callback) {
+    callback(_(l10n_id));
+});
+
+// Functions about Google Tasks
 
 function authorize() {
     console.log("checking auth");

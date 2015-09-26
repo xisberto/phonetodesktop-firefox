@@ -19,11 +19,14 @@
                         <li class="active hidden">
                             <a aria-controls="wait" role="tab" data-toggle="tab" href="#tab_wait"></a>
                         </li>
-                        <li>
-                            <a aria-controls="list" role="tab" data-toggle="tab" href="#tab_list">View list</a>
+                        <li class="hidden">
+                            <a aria-controls="alert" role="tab" data-toggle="tab" href="#tab_alert"></a>
                         </li>
                         <li>
-                            <a aria-controls="about" role="tab" data-toggle="tab" href="#tab_about">About</a>
+                            <a aria-controls="list" role="tab" data-toggle="tab" href="#tab_list" data-l10n-id="tab_list"></a>
+                        </li>
+                        <li>
+                            <a aria-controls="about" role="tab" data-toggle="tab" href="#tab_about" data-l10n-id="tab_about"></a>
                         </li>
                     </ul>
                 </li>
@@ -50,14 +53,22 @@
                     </svg>
                 </div>
             </div>
+            <div role="tabpanel" class="tab-pane" id="tab_alert">
+                <p id="needAuthorizeApp" data-l10n-id="needAuthorizeApp" />
+                <p id="needResetConf" data-l10n-id="needResetConf" />
+                <p class="center"><button class="btn btn-default" id="btn_reset" data-l10n-id="reset_configuration"></button></p>
+            </div>
             <div role="tabpanel" class="tab-pane" id="tab_list">
                 <div class="container-fluid" id="task_list">
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="tab_about">
                 <p class="center"><img src="images/icon128.png"></p>
-                <p class="center"><button class="btn" id="btn_reset"></button></p>
-                <div id="about_message"></div>
+                <p class="center"><button class="btn btn-default" id="btn_reset" data-l10n-id="reset_configuration"></button></p>
+                <div id="about_message">
+                    <p id="1" data-l10n-id="about_message1" ></p>
+                    <p id="2" data-l10n-id="about_message2" ></p>
+                </div>
             </div>
         </div>
     </section>
