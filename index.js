@@ -48,10 +48,6 @@ function onPanelHide() {
     button.state('window', {checked: false});
 }
 
-panel.port.on("_", function(l10n_id, callback) {
-    callback(_(l10n_id));
-});
-
 // Functions about Google Tasks
 
 function authorize() {
@@ -113,8 +109,9 @@ function getTasks() {
             onComplete: function(resp) {
                 if (resp.status == 401) {
                     panel.port.emit("alert-auth");
+                } else {
+                    panel.port.emit("load-list", resp.json.items);
                 }
-                panel.port.emit("load-list", resp.json.items);
             }
         }).get();    
     }

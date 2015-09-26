@@ -92,12 +92,16 @@ a:hover {
 
 .linear_layout .task_text {
 	width: 80%;
-	word-break: break-word;
+    word-break: break-all;
 }
 
 .linear_layout .btns {
     float: right;
 	cursor: pointer;
+}
+
+.btns a {
+    padding: 2px 4px;
 }
 
 .task_text.done {
