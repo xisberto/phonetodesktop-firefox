@@ -80,7 +80,6 @@ $(document).ready(function(){
     });
     $("#btn_reset").click(function(e){
         self.port.emit("logout");
-        self.port.emit("authorize");
     });
     prepareHTMLTexts();
 });

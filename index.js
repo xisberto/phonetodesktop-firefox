@@ -66,7 +66,7 @@ function onAuthChecked(token) {
     if (list_id) {
         getTasks();
     } else {
-        saveListId(token, onAuthChecked);
+        saveListId(token);
     }
 }
 
@@ -96,7 +96,7 @@ panel.port.on("get-tasks", function() {
 });
 
 function getTasks() {
-    var token = ss.storage.access_token;
+    var token = oauth.getToken();
     var list_id = ss.storage.list_id;
     if (token == undefined || list_id == undefined) {
         panel.port.emit("alert-auth");
@@ -108,7 +108,7 @@ function getTasks() {
             },
             onComplete: function(resp) {
                 if (resp.status == 401) {
-                    panel.port.emit("alert-auth");
+                     authorize();
                 } else {
                     panel.port.emit("load-list", resp.json.items);
                 }
@@ -118,7 +118,7 @@ function getTasks() {
 }
 
 panel.port.on("delete", function(task_id) {
-    var token = ss.storage.access_token;
+    var token = oauth.getToken();
     var list_id = ss.storage.list_id;
     if (token == undefined || list_id == undefined) {
         panel.port.emit("alert-auth");
@@ -133,9 +133,9 @@ panel.port.on("delete", function(task_id) {
 });
 
 function logout() {
+    console.log("Logging out");
     delete ss.storage.list_id;
-    delete ss.storage.access_token;
-    delete ss.storage.refresh_token;
+    console.log("Access token: " + ss.storage.access_token);    
 }
 
 panel.port.on("authorize", function (){
