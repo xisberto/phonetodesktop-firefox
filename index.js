@@ -3,7 +3,8 @@ var panels = require('sdk/panel');
 var self = require('sdk/self');
 var ss = require('sdk/simple-storage');
 var request = require('sdk/request');
-var oauth = require('addon-google-oauth2')
+var cm = require('sdk/context-menu');
+var oauth = require('addon-google-oauth2');
 var _ = require("sdk/l10n").get;
 
 console.log("init");
@@ -47,6 +48,44 @@ function showPanel(state) {
 function onPanelHide() {
     button.state('window', {checked: false});
 }
+
+// Context Menus
+
+var page_menuitem = cm.Item({
+    label: "Send page to PhoneToDesktop",
+    context: cm.PageContext(),
+    contentScript:  'self.on("click", function (node, data) {' +
+                    '   self.postMessage(document.URL)' +
+                    '})',
+    onMessage: function (message) {
+        postTask(message);
+    }
+});
+
+var text_menuitem = cm.Item({
+    label: "Send selected text to PhoneToDesktop",
+    context: cm.SelectionContext(),
+    contentScript:  'self.on("click", function (node, data) { ' +
+                    '   self.postMessage(window.getSelection().toString())' +
+                    '});',
+    onMessage: function (message) {
+        postTask(message);
+    }
+});
+
+var link_menuitem = cm.Item({
+    label: "Send link to PhoneToDesktop",
+    context: cm.SelectorContext("a[href]"),
+    contentScript:  'self.on("click", function (node, data) {' +
+                    '   if (node.nodeName == "A") {' +
+                    '       url = node.href;' +
+                    '       self.postMessage(url);' +
+                    '   }' +
+                    '});',
+    onMessage: function (message) {
+        postTask(message);
+    }
+});
 
 // Functions about Google Tasks
 
@@ -95,12 +134,18 @@ panel.port.on("get-tasks", function() {
     getTasks();
 });
 
-function getTasks() {
+function checkAuthAndExecute(callback) {
     var token = oauth.getToken();
     var list_id = ss.storage.list_id;
     if (token == undefined || list_id == undefined) {
         panel.port.emit("alert-auth");
     } else {
+        callback(token, list_id);
+    }
+}
+
+function getTasks() {
+    checkAuthAndExecute(function (token, list_id) {
         request.Request({
             url: "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks",
             headers: {
@@ -113,8 +158,27 @@ function getTasks() {
                     panel.port.emit("load-list", resp.json.items);
                 }
             }
-        }).get();    
-    }
+        }).get();
+    });
+}
+
+function postTask(task_title) {
+    checkAuthAndExecute(function (token, list_id) {
+        console.log("Sending " + task_title);
+        request.Request({
+            url: "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            contentType: "application/json",
+            content: {
+                title: task_title
+            },
+            onComplete: function(resp) {
+                console.log(resp);
+            }
+        }).post();
+    });
 }
 
 panel.port.on("delete", function(task_id) {
