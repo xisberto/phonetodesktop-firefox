@@ -182,18 +182,14 @@ function postTask(task_title) {
 }
 
 panel.port.on("delete", function(task_id) {
-    var token = oauth.getToken();
-    var list_id = ss.storage.list_id;
-    if (token == undefined || list_id == undefined) {
-        panel.port.emit("alert-auth");
-    } else {
+    checkAuthAndExecute(function (token, list_id) {
         request.Request({
             url: "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks/"+task_id,
             headers: {
                 "Authorization": "Bearer " + token
             }
         }).delete();
-    }
+    });
 });
 
 function logout() {
