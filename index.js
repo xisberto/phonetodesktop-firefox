@@ -19,6 +19,8 @@ var button = ToggleButton({
         "32": "./icon-32.png",
         "64": "./icon-64.png"
     },
+    badgeColor: "#669900",
+    badge: "",
     onChange: showPanel
 });
 
@@ -165,6 +167,7 @@ function getTasks() {
 function postTask(task_title) {
     checkAuthAndExecute(function (token, list_id) {
         console.log("Sending " + task_title);
+        button.badge = "…";
         request.Request({
             url: "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks",
             headers: {
@@ -177,6 +180,7 @@ function postTask(task_title) {
                 if (resp.status == 401) {
                     authorize();
                 }
+                button.badge = "";
             }
         }).post();
     });
