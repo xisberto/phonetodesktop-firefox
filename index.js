@@ -171,11 +171,12 @@ function postTask(task_title) {
                 "Authorization": "Bearer " + token
             },
             contentType: "application/json",
-            content: {
-                title: task_title
-            },
+            content: JSON.stringify({title: task_title}),
             onComplete: function(resp) {
                 console.log(resp);
+                if (resp.status == 401) {
+                    authorize();
+                }
             }
         }).post();
     });
