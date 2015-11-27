@@ -13,24 +13,6 @@ function delete_item(event){
 }
 
 self.port.on("alert-auth", function() {
-//    $("#task_list").empty();
-//    linear_layout = $("<div class='linear_layout min_height'>");
-//    message_authorize = $("<p>");
-//    message_authorize.text(_("needAuthorizeApp"));
-//    message_authorize.linkify({
-//        target: "_blank"
-//    });
-//    
-//    message_reset = $("<p>");
-//    message_reset.text(_("needResetConf"));
-//    button_reset = $("<a class='btn btn-default'>");
-//    button_reset.text(_("reset_configuration"));
-//    button_reset.click(reset_configuration);
-//    message_reset.append(button_reset);
-//    
-//    linear_layout.append(message_authorize);
-//    linear_layout.append(message_reset);
-//    linear_layout.appendTo($("#task_list"));
     $("#actionbar_tab a[href='#tab_alert']").tab('show');
 });
 
@@ -78,7 +60,10 @@ $(document).ready(function(){
         $("#actionbar_tab a[href='#tab_wait']").tab('show');
         self.port.emit("get-tasks");
     });
-    $("#btn_reset").click(function(e){
+    $("#btn_reset1").click(function(e){
+        self.port.emit("logout");
+    });
+    $("#btn_reset2").click(function(e){
         self.port.emit("logout");
     });
     prepareHTMLTexts();
