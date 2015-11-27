@@ -54,7 +54,7 @@ function onPanelHide() {
 // Context Menus
 
 var page_menuitem = cm.Item({
-    label: "Send page to PhoneToDesktop",
+    label: _("send_page"),
     context: cm.PageContext(),
     contentScript:  'self.on("click", function (node, data) {' +
                     '   self.postMessage(document.URL)' +
@@ -65,7 +65,7 @@ var page_menuitem = cm.Item({
 });
 
 var text_menuitem = cm.Item({
-    label: "Send selected text to PhoneToDesktop",
+    label: _("send_selection"),
     context: cm.SelectionContext(),
     contentScript:  'self.on("click", function (node, data) { ' +
                     '   self.postMessage(window.getSelection().toString())' +
@@ -76,7 +76,7 @@ var text_menuitem = cm.Item({
 });
 
 var link_menuitem = cm.Item({
-    label: "Send link to PhoneToDesktop",
+    label: _("send_link"),
     context: cm.SelectorContext("a[href]"),
     contentScript:  'self.on("click", function (node, data) {' +
                     '   if (node.nodeName == "A") {' +
@@ -102,7 +102,6 @@ function authorize() {
 }
 
 function onAuthChecked(token) {
-    console.log("onAuthChecked called with token: " + token);
     var list_id = ss.storage.list_id;
     if (list_id) {
         getTasks();
@@ -112,7 +111,6 @@ function onAuthChecked(token) {
 }
 
 function saveListId(access_token) {
-    console.log("saveListId called with token: " + access_token);
     request.Request({
         url: "https://www.googleapis.com/tasks/v1/users/@me/lists",
         headers: {
@@ -131,10 +129,6 @@ function saveListId(access_token) {
         }
     }).get();
 }
-
-panel.port.on("get-tasks", function() {
-    getTasks();
-});
 
 function checkAuthAndExecute(callback) {
     var token = oauth.getToken();
@@ -166,7 +160,6 @@ function getTasks() {
 
 function postTask(task_title) {
     checkAuthAndExecute(function (token, list_id) {
-        console.log("Sending " + task_title);
         button.badge = "…";
         request.Request({
             url: "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks",
@@ -176,7 +169,6 @@ function postTask(task_title) {
             contentType: "application/json",
             content: JSON.stringify({title: task_title}),
             onComplete: function(resp) {
-                console.log(resp);
                 if (resp.status == 401) {
                     authorize();
                 }
@@ -186,7 +178,7 @@ function postTask(task_title) {
     });
 }
 
-panel.port.on("delete", function(task_id) {
+panel.port.on("delete", function (task_id) {
     checkAuthAndExecute(function (token, list_id) {
         request.Request({
             url: "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks/"+task_id,
@@ -198,17 +190,24 @@ panel.port.on("delete", function(task_id) {
 });
 
 function logout() {
-    console.log("Logging out");
     delete ss.storage.list_id;
-    console.log("Access token: " + ss.storage.access_token);    
+    delete ss.storage.refresh_token;
+    panel.hide();
+    authorize();
 }
 
-panel.port.on("authorize", function (){
+panel.port.on("authorize", function () {
     panel.hide();
     authorize();
 });
 
-panel.port.on("logout", function(){
+panel.port.on("logout", function () {
+    console.log("logout");
     logout();
     panel.port.emit("alert-auth");
+});
+
+panel.port.on("get-tasks", function () {
+    console.log("get-tasks");
+    getTasks();
 });
