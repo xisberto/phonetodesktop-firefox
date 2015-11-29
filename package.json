@@ -1,6 +1,6 @@
 {
-  "title": "Phone to Desktop Firefox Addon",
-  "name": "phonetodesktop-firefox",
+  "title": "Phone to Desktop Addon",
+  "name": "phonetodesktop",
   "version": "0.1.0",
   "description": "Firefox add-on for Phone to Desktop Android app",
   "main": "index.js",
@@ -8,5 +8,5 @@
   "engines": {
     "firefox": ">=38.0a1"
   },
-  "license": "Apache-2.0"
+  "license": "GPLv3.0"
 }
