@@ -94,8 +94,8 @@ var link_menuitem = cm.Item({
 function authorize() {
     console.log("checking auth");
     var oauth2_options = {
-        client_id: "396885376537-avfrd05q028n6bo2fpi6p26sarqo4822.apps.googleusercontent.com",
-        client_secret: "1WiaiN_m_D-PsaSf8Dyz8_Tu",
+        client_id: "CLIENT_ID",
+        client_secret: "CLIENT_SECRET",
         scopes: "https://www.googleapis.com/auth/tasks"
     }
     oauth.refreshToken(oauth2_options, onAuthChecked);
