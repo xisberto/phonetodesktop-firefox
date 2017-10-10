@@ -1,6 +1,6 @@
 function saveListId(interactive) {
     var url = "https://www.googleapis.com/tasks/v1/users/@me/lists";
-    chrome.runtime.getBackgroundPage(function(backgroundPage){
+    browser.runtime.getBackgroundPage(function(backgroundPage){
         backgroundPage.authenticatedXhr('GET', url, null, interactive, function(error, status, response){
             if (error != undefined) {
                 console.log("No list returned");
@@ -40,13 +40,13 @@ function loadTasks() {
     $("#actionbar_tab a[href='#tab_wait']").tab('show');
     var list_id = localStorage.getItem('list_id');
     if (list_id == null){
-        chrome.runtime.getBackgroundPage(function(backgroundPage) {
+        browser.runtime.getBackgroundPage(function(backgroundPage) {
             backgroundPage.addEventListener("storage", handle_list_id_updated, false);
         });
         saveListId(true);
         return;
     } else {
-        chrome.runtime.getBackgroundPage(function(backgroundPage) {
+        browser.runtime.getBackgroundPage(function(backgroundPage) {
             backgroundPage.removeEventListener("storage", handle_list_id_updated, false);
         });
         var url = "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks";
@@ -58,7 +58,7 @@ function loadTasks() {
                 alertNoList();
             }
         }
-        chrome.runtime.getBackgroundPage(function(backgroundPage){
+        browser.runtime.getBackgroundPage(function(backgroundPage){
             backgroundPage.authenticatedXhr('GET', url, null, false, callback);
         });
     }
@@ -80,7 +80,7 @@ function delete_item(event){
     };
     parent.removeClass('min_height');
     parent.slideUp(300, function(){
-        chrome.runtime.getBackgroundPage(function(backgroundPage){
+        browser.runtime.getBackgroundPage(function(backgroundPage){
             backgroundPage.authenticatedXhr('DELETE', url, null, false, callback);
         });
     });
@@ -90,15 +90,15 @@ function alertNoList() {
     $("#task_list").empty();
     linear_layout = $("<div class='linear_layout min_height'>");
     message_authorize = $("<p>");
-    message_authorize.text(chrome.i18n.getMessage("needAuthorizeApp"));
+    message_authorize.text(browser.i18n.getMessage("needAuthorizeApp"));
     message_authorize.linkify({
         target: "_blank"
     });
     
     message_reset = $("<p>");
-    message_reset.text(chrome.i18n.getMessage("needResetConf"));
+    message_reset.text(browser.i18n.getMessage("needResetConf"));
     button_reset = $("<a class='btn btn-default'>");
-    button_reset.text(chrome.i18n.getMessage("reset_configuration"));
+    button_reset.text(browser.i18n.getMessage("reset_configuration"));
     button_reset.click(reset_configuration);
     message_reset.append(button_reset);
     
@@ -136,12 +136,12 @@ function listTasks(tasks) {
 }
 
 function prepareHTMLTexts(){
-    $("a[href='#tab_list']").text(chrome.i18n.getMessage("tab_list"));
-    $("a[href='#tab_about']").text(chrome.i18n.getMessage("tab_about"));
-    $("#btn_reset").text(chrome.i18n.getMessage("reset_configuration"));
+    $("a[href='#tab_list']").text(browser.i18n.getMessage("tab_list"));
+    $("a[href='#tab_about']").text(browser.i18n.getMessage("tab_about"));
+    $("#btn_reset").text(browser.i18n.getMessage("reset_configuration"));
 	var autolinker = new Autolinker();
-	var message1_text = autolinker.link(chrome.i18n.getMessage("about_message1"));
-	var message2_text = autolinker.link(chrome.i18n.getMessage("about_message2"));
+	var message1_text = autolinker.link(browser.i18n.getMessage("about_message1"));
+	var message2_text = autolinker.link(browser.i18n.getMessage("about_message2"));
     $("<p>")
         .html(message1_text)
         .appendTo($("#about_message"));

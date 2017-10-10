@@ -6,9 +6,9 @@ function authenticatedXhr(method, url, params, interactive, callback) {
     getToken();
 
     function getToken() {
-        chrome.identity.getAuthToken({ interactive: interactive }, function(token) {
-            if (chrome.runtime.lastError) {
-                callback(chrome.runtime.lastError);
+        browser.identity.getAuthToken({ interactive: interactive }, function(token) {
+            if (browser.runtime.lastError) {
+                callback(browser.runtime.lastError);
                 return;
             }
             
@@ -35,7 +35,7 @@ function authenticatedXhr(method, url, params, interactive, callback) {
     function requestComplete() {
         if (this.status == 401 && retry) {
             retry = false;
-            chrome.identity.removeCachedAuthToken({ token: access_token }, 
+            browser.identity.removeCachedAuthToken({ token: access_token }, 
                                                   getToken);
         } else {
             callback(null, this.status, this.response);
@@ -70,7 +70,7 @@ function contextMenuClick(onClickData, tab) {
             '}';
         console.log(params);
         var callback = function(error, status, resp) {
-            chrome.browserAction.setBadgeText({"text": ""});
+            browser.browserAction.setBadgeText({"text": ""});
             if (status == 200) {
                 console.log("OK");
                 console.log(resp);
@@ -79,39 +79,39 @@ function contextMenuClick(onClickData, tab) {
                 console.log(resp);
             }
         }
-        chrome.browserAction.setBadgeText({"text": "…"});
+        browser.browserAction.setBadgeText({"text": "…"});
         authenticatedXhr('POST', url, params, false, callback)
     }
     
 }
 
-chrome.contextMenus.onClicked.addListener(contextMenuClick);
+browser.contextMenus.onClicked.addListener(contextMenuClick);
 
 function configureContextMenus() {
-    chrome.contextMenus.create({
-        title: chrome.i18n.getMessage("send_to_mobile"),
+    browser.contextMenus.create({
+        title: browser.i18n.getMessage("send_to_mobile"),
         contexts: ["link", "selection"],
         id: "link"
     });
-    chrome.contextMenus.create({
-        title: chrome.i18n.getMessage("send_page_to_mobile"),
+    browser.contextMenus.create({
+        title: browser.i18n.getMessage("send_page_to_mobile"),
         contexts: ["page"],
         id: "page"
     });
 }
 
-chrome.runtime.onInstalled.addListener(function() {
+browser.runtime.onInstalled.addListener(function() {
     console.log("Running on install");
-    chrome.identity.getAuthToken({ interactive: true }, function(token) {
+    browser.identity.getAuthToken({ interactive: true }, function(token) {
         console.log("token obtained");
     });
     configureContextMenus();
 });
 
-chrome.runtime.onStartup.addListener(function() {
+browser.runtime.onStartup.addListener(function() {
     console.log("Running on startup");
     
-    chrome.browserAction.setBadgeBackgroundColor({"color": "#669900"});
+    browser.browserAction.setBadgeBackgroundColor({"color": "#669900"});
     
     configureContextMenus();
 });
