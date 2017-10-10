@@ -19,14 +19,11 @@
                         <li class="active hidden">
                             <a aria-controls="wait" role="tab" data-toggle="tab" href="#tab_wait"></a>
                         </li>
-                        <li class="hidden">
-                            <a aria-controls="alert" role="tab" data-toggle="tab" href="#tab_alert"></a>
+                        <li>
+                            <a aria-controls="list" role="tab" data-toggle="tab" href="#tab_list">View list</a>
                         </li>
                         <li>
-                            <a aria-controls="list" role="tab" data-toggle="tab" href="#tab_list" data-l10n-id="tab_list"></a>
-                        </li>
-                        <li>
-                            <a aria-controls="about" role="tab" data-toggle="tab" href="#tab_about" data-l10n-id="tab_about"></a>
+                            <a aria-controls="about" role="tab" data-toggle="tab" href="#tab_about">About</a>
                         </li>
                     </ul>
                 </li>
@@ -53,25 +50,23 @@
                     </svg>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="tab_alert">
-                <p id="needAuthorizeApp" data-l10n-id="needAuthorizeApp" />
-                <p id="needResetConf" data-l10n-id="needResetConf" />
-                <p class="center"><button class="btn btn-default" id="btn_reset1" data-l10n-id="reset_configuration"></button></p>
-            </div>
             <div role="tabpanel" class="tab-pane" id="tab_list">
                 <div class="container-fluid" id="task_list">
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="tab_about">
                 <p class="center"><img src="images/icon128.png"></p>
-                <p class="center"><button class="btn btn-default" id="btn_reset2" data-l10n-id="reset_configuration"></button></p>
-                <div id="about_message">
-                    <p id="1" data-l10n-id="about_message1" ></p>
-                    <p id="2" data-l10n-id="about_message2" ></p>
-                </div>
+                <p class="center"><button class="btn" id="btn_reset"></button></p>
+                <div id="about_message"></div>
             </div>
         </div>
     </section>
+    
+<!-- Placed at the end of the document so the pages load faster -->
+    <script src="bootstrap/js/jquery-2.1.4.min.js"></script>
+    <script src="bootstrap/js/bootstrap.js"></script>
+    <script src="js/Autolinker.js"></script>
+    <script src="popup.js"></script>
 
 </body>
 </html>
