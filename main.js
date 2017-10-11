@@ -9,7 +9,8 @@ function notifyUser(user) {
   });
 }
 
-function getListID(lists) {
+async function getListIDFromLists(lists) {
+  console.log("getListIDFromLists Called")
   // console.log(lists)
   var list_items = lists.items
   // console.log(list_items)
@@ -18,33 +19,25 @@ function getListID(lists) {
       // console.log(list_items[i].id)
       // console.log(list_items[i].title)
       // console.log(list_items[i].selfLink)
-      return list_items[i].id
+      list_id = list_items[i].id
+      // save list_id and then return it
+      saveListID(list_id)
+      return list_id
     }
   }
 }
 
 function saveListID(list_id) {
+  console.log("saveListID Called")
   console.log("Saving List ID: " + list_id)
   localStorage.setItem('list_id', list_id)
+}
+
+function getListID() {
+  return localStorage.getItem('list_id');
 }
 
 function logError(error) {
   console.error(error);
 }
-
-/**
-When the button's clicked:
-- get an access token using the identity API
-- use it to get the user's info
-- show a notification containing some of it
-*/
-// browser.browserAction.onClicked.addListener(() => {
-//   getAccessToken()
-//     .then(getTaskLists)
-//     .then(getListID)
-//     .then(saveListID)
-//     .catch(logError);
-//     // .then(getUserInfo)
-//     // .then(notifyUser)
-//   });
 

@@ -1,8 +1,13 @@
 function reset_configuration() {
     localStorage.removeItem('list_id');
     console.log("reset_configuration");
+    browser.runtime.getBackgroundPage((page)=>{
+            page.getAccessToken()
+                .then(page.getTaskLists)
+                .then(page.getListIDFromLists)
+                .then(loadTasks)
+    });
     console.log("list_id: " + localStorage.getItem("list_id"));
-    loadTasks();
 }
 
 function handle_list_id_updated(e) {
@@ -15,57 +20,69 @@ function loadTasks() {
     console.log("Load Tasks Called")
     $("#actionbar_tab a[href='#tab_wait']").tab('show');
     browser.runtime.getBackgroundPage((page)=>{
+        var list_id = page.getListID();
+        if (list_id == null){
+            alertNoList()
+            return
+        }
         page.getAccessToken()
-            .then(page.getTasks)
-            .then((response)=>{
-                console.log(response)
-                console.log(response.items)
-                // resp = JSON.parse(response.items);
-                listTasks(response.items);
+            .then((token)=>{
+            page.fetchTasks(token, list_id)
+                .then((response)=>{
+                    console.log(response)
+                    console.log(response.items)
+                    listTasks(response.items);
+                })
             })
-            .catch((error)=>{
-                console.error(error)
-                alertNoList();
-            })
-    });
-
+        }
+    );
 
 }
 
 function delete_item(event){
-    var parent = $(this).parent().parent();
-    var list_id = localStorage.getItem('list_id');
-    var task_id = parent.attr("id");
-    var url = "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks/"+task_id;
-    var callback = function(error, status, resp){
-        if (status != 204) {
-            parent.slideDown(300, function(){
-                parent.addClass('min_height');
+    browser.runtime.getBackgroundPage((page)=>{
+        page.getAccessToken().then((accessToken)=>{
+            var parent = $(this).parent().parent();
+            var list_id = page.getListID();
+            var task_id = parent.attr("id");
+            const requestURL = "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks/"+task_id;
+            console.log("requestURL: " + requestURL)
+            const requestHeaders = new Headers();
+            requestHeaders.append('Authorization', 'Bearer ' + accessToken);
+            const driveRequest = new Request(requestURL, {
+            method: "GET",
+            headers: requestHeaders
             });
-        } else {
-            parent.remove();
-        }
-    };
-    parent.removeClass('min_height');
-    parent.slideUp(300, function(){
-        browser.runtime.getBackgroundPage(function(backgroundPage){
-            backgroundPage.authenticatedXhr('DELETE', url, null, false, callback);
+            parent.slideUp(300, function(){
+                fetch(driveRequest).then((response) => {
+                    console.log(response)
+                    if (response.status != 204) {
+                        parent.slideDown(300, function(){
+                            parent.addClass('min_height');
+                        });
+                    } else {
+                    parent.remove();
+                    }
+                });
+                parent.removeClass('min_height');
+            });
         });
     });
 }
 
 function alertNoList() {
+    console.log("alertNoList Called")
+    // $("#tab_wait").empty();
     $("#task_list").empty();
     linear_layout = $("<div class='linear_layout min_height'>");
     message_authorize = $("<p>");
     message_authorize.text(browser.i18n.getMessage("needAuthorizeApp"));
-    message_authorize.linkify({
-        target: "_blank"
-    });
-    
+    // message_authorize.linkify({
+    //     target: "_blank"
+    // });
     message_reset = $("<p>");
     message_reset.text(browser.i18n.getMessage("needResetConf"));
-    button_reset = $("<a class='btn btn-default'>");
+    button_reset = $("<a class='btn btn-info '>");
     button_reset.text(browser.i18n.getMessage("reset_configuration"));
     button_reset.click(reset_configuration);
     message_reset.append(button_reset);
@@ -77,6 +94,7 @@ function alertNoList() {
 }
 
 function listTasks(tasks) {
+    console.log("listTasks Called")
     $("#task_list").empty();
 	var autolinker = new Autolinker();
     for (j in tasks) {

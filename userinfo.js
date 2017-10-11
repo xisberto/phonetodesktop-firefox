@@ -46,22 +46,34 @@ function getTaskLists(accessToken) {
   });
 }
 
-function getTasks(accessToken) {
-  var list_id = localStorage.getItem('list_id');
-  if (list_id == null){
-    // get and save list ID
-    getAccessToken()
-      .then(getTaskLists)
-      .then(getListID)
-      .then(saveListID)
-      .catch(logError);
-    // read it back
-    list_id = localStorage.getItem('list_id');
-  }
-  console.log("got list_id from Storage: " + list_id)
+function fetchTasks(accessToken, list_id) {
+    console.log("fetchTasks Called")
+    const requestURL = "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks?alt=json";
+    console.log("requestURL: " + requestURL)
+    const requestHeaders = new Headers();
+    requestHeaders.append('Authorization', 'Bearer ' + accessToken);
+    const driveRequest = new Request(requestURL, {
+      method: "GET",
+      headers: requestHeaders
+    });
+  
+    return fetch(driveRequest).then((response) => {
+      if (response.status === 200) {
+        console.log("Got Tasks: 200")
+        console.log(response)
+        return response.json();
+      } else {
+        throw response.status;
+      }
+    });
+}
 
+function deleteTask(accessToken, list_id) {
+  console.log("fetchTasks Called")
   const requestURL = "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks?alt=json";
+  console.log("requestURL: " + requestURL)
   const requestHeaders = new Headers();
+  page.
   requestHeaders.append('Authorization', 'Bearer ' + accessToken);
   const driveRequest = new Request(requestURL, {
     method: "GET",
