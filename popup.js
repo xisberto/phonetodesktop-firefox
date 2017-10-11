@@ -1,13 +1,11 @@
 function reset_configuration() {
     localStorage.removeItem('list_id');
-    console.log("reset_configuration");
     browser.runtime.getBackgroundPage((page)=>{
             page.getAccessToken()
                 .then(page.getTaskLists)
                 .then(page.getListIDFromLists)
                 .then(loadTasks)
     });
-    console.log("list_id: " + localStorage.getItem("list_id"));
 }
 
 function handle_list_id_updated(e) {
@@ -17,7 +15,6 @@ function handle_list_id_updated(e) {
 }
 
 function loadTasks() {
-    console.log("Load Tasks Called")
     $("#actionbar_tab a[href='#tab_wait']").tab('show');
     browser.runtime.getBackgroundPage((page)=>{
         var list_id = page.getListID();
@@ -29,8 +26,6 @@ function loadTasks() {
             .then((token)=>{
             page.fetchTasks(token, list_id)
                 .then((response)=>{
-                    console.log(response)
-                    console.log(response.items)
                     listTasks(response.items);
                 })
             })
@@ -48,14 +43,11 @@ function delete_item(event){
             parent.slideUp(300, function(){
                 page.deleteTask(accessToken, list_id, task_id)
                     .then((response) => {
-                        console.log(response)
                         if (response.status != 204) {
-                            console.log("delete failed, " + response.status)
                             parent.slideDown(300, function(){
                                 parent.addClass('min_height');
                             });
                         } else {
-                            console.log("Task Deleted")
                             parent.remove();
                         }
                     });
@@ -68,7 +60,6 @@ function delete_item(event){
 function alertNoList() {
     // called when we don't have list_id in Store.
     // so we have not authorized and not fetched and stored list_id in localStore
-    console.log("alertNoList Called")
     // $("#tab_wait").empty();
     $("#task_list").empty();
     linear_layout = $("<div class='linear_layout min_height'>");
@@ -91,7 +82,6 @@ function alertNoList() {
 }
 
 function listTasks(tasks) {
-    console.log("listTasks Called")
     $("#task_list").empty();
 	var autolinker = new Autolinker();
     for (j in tasks) {
@@ -134,7 +124,6 @@ function prepareHTMLTexts(){
 }
 
 $(document).ready(function(){
-    console.log("Document is Ready")
     $("#actionbar_tab a").click(function(e){
         e.preventDefault();
         $(this).tab('show');

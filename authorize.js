@@ -32,12 +32,10 @@ it seems to be "aud".
 */
 function validate(redirectURL) {
   const accessToken = extractAccessToken(redirectURL);
-  console.log("Validating Access Token: " + accessToken)
   if (!accessToken) {
     throw "Authorization failure";
   }
   const validationURL = `${VALIDATION_BASE_URL}?access_token=${accessToken}`;
-  console.log("validation URL: " + validationURL)
   const validationRequest = new Request(validationURL, {
     method: "GET"
   });
