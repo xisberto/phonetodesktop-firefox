@@ -17,17 +17,17 @@ function contextMenuClick(onClickData, tab) {
                 break;
         }
         var list_id = localStorage.getItem("list_id");
-        getAccessToken().then((accessToken)=>{
-            browser.browserAction.setBadgeText({"text": "..."});
-            browser.browserAction.setBadgeBackgroundColor({color: "#ffa000"});
+        getAccessToken().then((accessToken) => {
+            browser.browserAction.setBadgeText({ "text": "..." });
+            browser.browserAction.setBadgeBackgroundColor({ color: "#ffa000" });
             browser.browserAction.setBadgeBackgroundColor
-            addTask(accessToken, list_id, task_title).then((response)=>{
-                if (response.status == 200){
-                    browser.browserAction.setBadgeText({"text": ""});
-                    browser.browserAction.setBadgeBackgroundColor({color: ""});
-                } else{
-                    browser.browserAction.setBadgeText({"text": "!!!"});
-                    browser.browserAction.setBadgeBackgroundColor({color: "#f44336"});
+            addTask(accessToken, list_id, task_title).then((response) => {
+                if (response.status == 200) {
+                    browser.browserAction.setBadgeText({ "text": "" });
+                    browser.browserAction.setBadgeBackgroundColor({ color: "" });
+                } else {
+                    browser.browserAction.setBadgeText({ "text": "!!!" });
+                    browser.browserAction.setBadgeBackgroundColor({ color: "#f44336" });
                 }
             })
         })
@@ -54,10 +54,10 @@ function configureContextMenus() {
     });
 }
 
-browser.runtime.onInstalled.addListener(function() {
+browser.runtime.onInstalled.addListener(function () {
     configureContextMenus();
 });
 
-browser.runtime.onStartup.addListener(function() {
+browser.runtime.onStartup.addListener(function () {
     configureContextMenus();
 });

@@ -1,21 +1,21 @@
 /* exported getAccessToken */
 const REDIRECT_URL = browser.identity.getRedirectURL();
-const CLIENT_ID = "1066283810319-khd8dkitlcc04idpncal0f2hbsmsv9r3.apps.googleusercontent.com";
-const SCOPES = ["openid", "email", "profile", "https://www.googleapis.com/auth/tasks"];
+const CLIENT_ID = "YOUR_CLIENT_ID";
+const SCOPES = ["https://www.googleapis.com/auth/tasks"];
 const AUTH_URL =
-`https://accounts.google.com/o/oauth2/auth
+    `https://accounts.google.com/o/oauth2/auth
 ?client_id=${CLIENT_ID}
 &response_type=token
 &redirect_uri=${encodeURIComponent(REDIRECT_URL)}
 &scope=${encodeURIComponent(SCOPES.join(' '))}`;
-const VALIDATION_BASE_URL="https://www.googleapis.com/oauth2/v3/tokeninfo";
+const VALIDATION_BASE_URL = "https://www.googleapis.com/oauth2/v3/tokeninfo";
 
 function extractAccessToken(redirectUri) {
-  let m = redirectUri.match(/[#?](.*)/);
-  if (!m || m.length < 1)
-    return null;
-  let params = new URLSearchParams(m[1].split("#")[0]);
-  return params.get("access_token");
+    let m = redirectUri.match(/[#?](.*)/);
+    if (!m || m.length < 1)
+        return null;
+    let params = new URLSearchParams(m[1].split("#")[0]);
+    return params.get("access_token");
 }
 
 /**
@@ -31,31 +31,35 @@ Note that the Google page talks about an "audience" property, but in fact
 it seems to be "aud".
 */
 function validate(redirectURL) {
-  const accessToken = extractAccessToken(redirectURL);
-  if (!accessToken) {
-    throw "Authorization failure";
-  }
-  const validationURL = `${VALIDATION_BASE_URL}?access_token=${accessToken}`;
-  const validationRequest = new Request(validationURL, {
-    method: "GET"
-  });
-
-  function checkResponse(response) {
-    return new Promise((resolve, reject) => {
-      if (response.status != 200) {
-        reject("Token validation error");
-      }
-      response.json().then((json) => {
-        if (json.aud && (json.aud === CLIENT_ID)) {
-          resolve(accessToken);
-        } else {
-          reject("Token validation error");
-        }
-      });
+    // when looking for redirect URL for auth tokens
+    // see https://github.com/mdn/webextensions-examples/tree/master/google-userinfo
+    // console.log("Redirect URL from browser.identity: " + browser.identity.getRedirectURL())
+    // console.log("Redirect URL with auth token: " + redirectURL)
+    const accessToken = extractAccessToken(redirectURL);
+    if (!accessToken) {
+        throw "Authorization failure";
+    }
+    const validationURL = `${VALIDATION_BASE_URL}?access_token=${accessToken}`;
+    const validationRequest = new Request(validationURL, {
+        method: "GET"
     });
-  }
 
-  return fetch(validationRequest).then(checkResponse);
+    function checkResponse(response) {
+        return new Promise((resolve, reject) => {
+            if (response.status != 200) {
+                reject("Token validation error");
+            }
+            response.json().then((json) => {
+                if (json.aud && (json.aud === CLIENT_ID)) {
+                    resolve(accessToken);
+                } else {
+                    reject("Token validation error");
+                }
+            });
+        });
+    }
+
+    return fetch(validationRequest).then(checkResponse);
 }
 
 /**
@@ -64,13 +68,18 @@ If successful, this resolves with a redirectURL string that contains
 an access token.
 */
 function authorize() {
-  return browser.identity.launchWebAuthFlow({
-    interactive: true,
-    url: AUTH_URL
-  });
+    // current Redirect URL is 
+    // https://53fc361cb5542e05b4bea1f89ba18199892aa0c1.extensions.allizom.org/
+    // which is for this id "phone-to-desktop-firefox@electron0zero.xyz"
+    // used to see redirectURL, used for OAuth2
+    // console.log("Redirect URL from browser.identity: " + browser.identity.getRedirectURL())
+    return browser.identity.launchWebAuthFlow({
+        interactive: true,
+        url: AUTH_URL
+    });
 }
 
 function getAccessToken() {
-  return authorize().then(validate);
+    return authorize().then(validate);
 
 }
