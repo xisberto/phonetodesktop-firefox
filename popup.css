@@ -5,6 +5,8 @@
 
 body {
     font-family: "Roboto";
+    width: 320px;
+    height: 640px;
     padding: 50px 0px;
 }
 
@@ -92,16 +94,12 @@ a:hover {
 
 .linear_layout .task_text {
 	width: 80%;
-    word-break: break-all;
+	word-break: break-word;
 }
 
 .linear_layout .btns {
     float: right;
 	cursor: pointer;
-}
-
-.btns a {
-    padding: 2px 4px;
 }
 
 .task_text.done {
