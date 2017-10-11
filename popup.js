@@ -1,32 +1,7 @@
-function saveListId(interactive) {
-    var url = "https://www.googleapis.com/tasks/v1/users/@me/lists";
-    browser.runtime.getBackgroundPage(function(backgroundPage){
-        backgroundPage.authenticatedXhr('GET', url, null, interactive, function(error, status, response){
-            if (error != undefined) {
-                console.log("No list returned");
-                return;
-            }
-            resp = JSON.parse(response);
-            var lists = resp.items;
-            for (i in lists) {
-                console.log("Lista: " + lists[i].title);
-                if (lists[i].title == "PhoneToDesktop") {
-                    localStorage.setItem('list_id', lists[i].id);
-                }
-            }
-            console.log('lista salva no localStorage: '+localStorage.getItem('list_id'));
-            if (localStorage.getItem('list_id') == null) {
-                alertNoList();
-            }
-        });
-    });
-    
-}
-
 function reset_configuration() {
     localStorage.removeItem('list_id');
     console.log("reset_configuration");
-    console.log("list_id: "+localStorage.getItem("list_id"));
+    console.log("list_id: " + localStorage.getItem("list_id"));
     loadTasks();
 }
 
@@ -37,31 +12,24 @@ function handle_list_id_updated(e) {
 }
 
 function loadTasks() {
+    console.log("Load Tasks Called")
     $("#actionbar_tab a[href='#tab_wait']").tab('show');
-    var list_id = localStorage.getItem('list_id');
-    if (list_id == null){
-        browser.runtime.getBackgroundPage(function(backgroundPage) {
-            backgroundPage.addEventListener("storage", handle_list_id_updated, false);
-        });
-        saveListId(true);
-        return;
-    } else {
-        browser.runtime.getBackgroundPage(function(backgroundPage) {
-            backgroundPage.removeEventListener("storage", handle_list_id_updated, false);
-        });
-        var url = "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks";
-        var callback = function(error, status, resp) {
-            if (status == 200) {
-                resp = JSON.parse(resp);
-                listTasks(resp.items);
-            } else {
+    browser.runtime.getBackgroundPage((page)=>{
+        page.getAccessToken()
+            .then(page.getTasks)
+            .then((response)=>{
+                console.log(response)
+                console.log(response.items)
+                // resp = JSON.parse(response.items);
+                listTasks(response.items);
+            })
+            .catch((error)=>{
+                console.error(error)
                 alertNoList();
-            }
-        }
-        browser.runtime.getBackgroundPage(function(backgroundPage){
-            backgroundPage.authenticatedXhr('GET', url, null, false, callback);
-        });
-    }
+            })
+    });
+
+
 }
 
 function delete_item(event){
@@ -151,6 +119,7 @@ function prepareHTMLTexts(){
 }
 
 $(document).ready(function(){
+    console.log("Document is Ready")
     $("#actionbar_tab a").click(function(e){
         e.preventDefault();
         $(this).tab('show');

@@ -1,22 +1,18 @@
 function authenticatedXhr(method, url, params, interactive, callback) {
+    console.log("authenticatedXhr Called with URL:" + url)
     var access_token;
 
     var retry = true;
 
     getToken();
+    function setToVar(accessToken) {
+        console.log("Setting Access Token to Var: " + accessToken)
+        access_token = accessToken;
+    }
 
     function getToken() {
-        browser.identity.getAuthToken({ interactive: interactive }, function(token) {
-            if (browser.runtime.lastError) {
-                callback(browser.runtime.lastError);
-                return;
-            }
-            
-            console.log("token obtained");
-
-            access_token = token;
-            requestStart();
-        });
+        getAccessToken().then(setToVar).catch(logError)
+        requestStart();
     }
 
     function requestStart() {
@@ -26,8 +22,10 @@ function authenticatedXhr(method, url, params, interactive, callback) {
         xhr.onload = requestComplete;
         if (params != null) {
             xhr.setRequestHeader("Content-Type", "application/json");
+            console.log(xhr)
             xhr.send(params);
         } else {
+            console.log(xhr)
             xhr.send();
         }
     }
@@ -35,8 +33,10 @@ function authenticatedXhr(method, url, params, interactive, callback) {
     function requestComplete() {
         if (this.status == 401 && retry) {
             retry = false;
-            browser.identity.removeCachedAuthToken({ token: access_token }, 
-                                                  getToken);
+            console.log("Auth Error, Code: 401")
+            getToken();
+            // browser.identity.removeCachedAuthToken({ token: access_token }, 
+            //                                       getToken);
         } else {
             callback(null, this.status, this.response);
         }
@@ -102,9 +102,13 @@ function configureContextMenus() {
 
 browser.runtime.onInstalled.addListener(function() {
     console.log("Running on install");
-    browser.identity.getAuthToken({ interactive: true }, function(token) {
+    getAccessToken().then((token)=>{
         console.log("token obtained");
-    });
+        console.log(token)
+    }).catch(logError)
+    // browser.identity.getAuthToken({ interactive: true }, function(token) {
+    //     console.log("token obtained");
+    // });
     configureContextMenus();
 });
 
