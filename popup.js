@@ -45,25 +45,20 @@ function delete_item(event){
             var parent = $(this).parent().parent();
             var list_id = page.getListID();
             var task_id = parent.attr("id");
-            const requestURL = "https://www.googleapis.com/tasks/v1/lists/"+list_id+"/tasks/"+task_id;
-            console.log("requestURL: " + requestURL)
-            const requestHeaders = new Headers();
-            requestHeaders.append('Authorization', 'Bearer ' + accessToken);
-            const driveRequest = new Request(requestURL, {
-            method: "GET",
-            headers: requestHeaders
-            });
             parent.slideUp(300, function(){
-                fetch(driveRequest).then((response) => {
-                    console.log(response)
-                    if (response.status != 204) {
-                        parent.slideDown(300, function(){
-                            parent.addClass('min_height');
-                        });
-                    } else {
-                    parent.remove();
-                    }
-                });
+                page.deleteTask(accessToken, list_id, task_id)
+                    .then((response) => {
+                        console.log(response)
+                        if (response.status != 204) {
+                            console.log("delete failed, " + response.status)
+                            parent.slideDown(300, function(){
+                                parent.addClass('min_height');
+                            });
+                        } else {
+                            console.log("Task Deleted")
+                            parent.remove();
+                        }
+                    });
                 parent.removeClass('min_height');
             });
         });
@@ -71,6 +66,8 @@ function delete_item(event){
 }
 
 function alertNoList() {
+    // called when we don't have list_id in Store.
+    // so we have not authorized and not fetched and stored list_id in localStore
     console.log("alertNoList Called")
     // $("#tab_wait").empty();
     $("#task_list").empty();

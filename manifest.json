@@ -13,10 +13,9 @@
     "description": "__MSG_extDesc__",
     "background": {
         "scripts": ["background.js",
-            "authorize.js",
-            "userinfo.js",
-            "main.js"
-        ]
+                    "authorize.js",
+                    "helper.js"
+                ]
     },
     "icons": {
         "16": "images/icon16.png",

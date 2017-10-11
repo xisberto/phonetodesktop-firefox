@@ -102,10 +102,10 @@ function configureContextMenus() {
 
 browser.runtime.onInstalled.addListener(function() {
     console.log("Running on install");
-    getAccessToken().then((token)=>{
-        console.log("token obtained");
-        console.log(token)
-    }).catch(logError)
+    // getAccessToken().then((token)=>{
+    //     console.log("token obtained");
+    //     console.log(token)
+    // }).catch(logError)
     // browser.identity.getAuthToken({ interactive: true }, function(token) {
     //     console.log("token obtained");
     // });
@@ -114,8 +114,6 @@ browser.runtime.onInstalled.addListener(function() {
 
 browser.runtime.onStartup.addListener(function() {
     console.log("Running on startup");
-    
     browser.browserAction.setBadgeBackgroundColor({"color": "#669900"});
-    
     configureContextMenus();
 });
