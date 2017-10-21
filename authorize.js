@@ -1,6 +1,9 @@
 /* exported getAccessToken */
+/**
+ * You must define your CLIENT_ID in the credentials.js file (ignored in .gitignore):
+ * const CLIENT_ID = "YOUR_CLIENT_ID";
+*/
 const REDIRECT_URL = browser.identity.getRedirectURL();
-const CLIENT_ID = "YOUR_CLIENT_ID";
 const SCOPES = ["https://www.googleapis.com/auth/tasks"];
 const AUTH_URL =
     `https://accounts.google.com/o/oauth2/auth

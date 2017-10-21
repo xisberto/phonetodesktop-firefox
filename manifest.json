@@ -4,7 +4,7 @@
     "manifest_version": 2,
     "applications": {
         "gecko": {
-            "id": "phone-to-desktop-firefox@electron0zero.xyz",
+            "id": "phone-to-desktop-firefox@xisberto.net",
             "strict_min_version": "56.0a1"
         }
     },
@@ -12,6 +12,7 @@
     "description": "__MSG_extDesc__",
     "background": {
         "scripts": [
+            "credentials.js",
             "background.js",
             "authorize.js",
             "helper.js"
