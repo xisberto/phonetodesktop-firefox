@@ -63,14 +63,14 @@ function alertNoList() {
     // $("#tab_wait").empty();
     $("#task_list").empty();
     linear_layout = $("<div class='linear_layout min_height'>");
+    autolinker = new Autolinker();
     message_authorize = $("<p>");
-    message_authorize.text(browser.i18n.getMessage("needAuthorizeApp"));
-    // message_authorize.linkify({
-    //     target: "_blank"
-    // });
+    message_content = browser.i18n.getMessage("needAuthorizeApp");
+    message_content = autolinker.link(message_content);
+    message_authorize.append(message_content);
     message_reset = $("<p>");
     message_reset.text(browser.i18n.getMessage("needResetConf"));
-    button_reset = $("<a class='btn btn-info '>");
+    button_reset = $("<a class='btn'>");
     button_reset.text(browser.i18n.getMessage("reset_configuration"));
     button_reset.click(reset_configuration);
     message_reset.append(button_reset);
