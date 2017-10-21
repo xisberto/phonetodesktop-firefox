@@ -7,7 +7,14 @@ body {
     font-family: "Roboto";
     width: 320px;
     height: 640px;
-    padding: 50px 0px;
+}
+
+.mdl-layout-title {
+    color: white;
+}
+
+.mdl-layout__header .mdl-layout__drawer-button {
+    color: white;
 }
 
 a {
