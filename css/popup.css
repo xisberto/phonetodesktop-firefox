@@ -65,8 +65,10 @@ a:hover {
 	padding-top: 20px;
 }
 
-#tab_about p.center {
-	text-align: center;
+#pane_about p, #pane_about img {
+	display: block;
+    margin: auto;
+    text-align: center;
 }
 
 #task_list {

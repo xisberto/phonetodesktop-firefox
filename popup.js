@@ -14,6 +14,9 @@ function handle_list_id_updated(e) {
     }
 }
 
+/**
+ * Selects a material pane by adding the class "is-active" to it
+*/
 function selectPane(pane_id) {
   var layout = document.querySelector('.mdl-layout').MaterialLayout;
   var panes = document.querySelectorAll(".mdl-layout__tab-panel");
@@ -25,6 +28,10 @@ function selectPane(pane_id) {
   }
 }
 
+/**
+ * Adds a event listener to the click action in a link, to make it select the
+ * corresponding pane by selectPane
+*/
 function setupDrawer(link) {
   link.addEventListener('click', function (e) {
     if (link.getAttribute('href').charAt(0) === '#') {
@@ -36,6 +43,9 @@ function setupDrawer(link) {
   });
 }
 
+/**
+ * Users setupDrawer to make the material drawer menu work
+*/
 function initDrawer() {
   var links = document.querySelectorAll(".mdl-navigation__link");
   for (var i = 0; i < links.length; i++) {
