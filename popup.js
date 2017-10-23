@@ -14,8 +14,47 @@ function handle_list_id_updated(e) {
     }
 }
 
+/**
+ * Selects a material pane by adding the class "is-active" to it
+*/
+function selectPane(pane_id) {
+  var layout = document.querySelector('.mdl-layout').MaterialLayout;
+  var panes = document.querySelectorAll(".mdl-layout__tab-panel");
+  var pane = document.querySelector("#" + pane_id);
+  layout.resetPanelState_(panes);
+  pane.classList.add("is-active");
+  if (pane.onSelected) {
+    pane.onSelected();
+  }
+}
+
+/**
+ * Adds a event listener to the click action in a link, to make it select the
+ * corresponding pane by selectPane
+*/
+function setupDrawer(link) {
+  link.addEventListener('click', function (e) {
+    if (link.getAttribute('href').charAt(0) === '#') {
+      e.preventDefault();
+      var href = link.href.split("#")[1];
+      selectPane(href);
+      document.querySelector('.mdl-layout').MaterialLayout.toggleDrawer();
+    }
+  });
+}
+
+/**
+ * Users setupDrawer to make the material drawer menu work
+*/
+function initDrawer() {
+  var links = document.querySelectorAll(".mdl-navigation__link");
+  for (var i = 0; i < links.length; i++) {
+    setupDrawer(links[i]);
+  }
+}
+
 function loadTasks() {
-    $("#actionbar_tab a[href='#tab_wait']").tab('show');
+    selectPane("pane_wait");
     browser.runtime.getBackgroundPage((page) => {
         var list_id = page.getListID();
         if (list_id == null) {
@@ -62,78 +101,64 @@ function alertNoList() {
     // so we have not authorized and not fetched and stored list_id in localStore
     // $("#tab_wait").empty();
     $("#task_list").empty();
-    linear_layout = $("<div class='linear_layout min_height'>");
-    autolinker = new Autolinker();
-    message_authorize = $("<p>");
-    message_content = browser.i18n.getMessage("needAuthorizeApp");
-    message_content = autolinker.link(message_content);
-    message_authorize.append(message_content);
-    message_reset = $("<p>");
-    message_reset.text(browser.i18n.getMessage("needResetConf"));
-    button_reset = $("<a class='btn'>");
-    button_reset.text(browser.i18n.getMessage("reset_configuration"));
-    button_reset.click(reset_configuration);
-    message_reset.append(button_reset);
-
-    linear_layout.append(message_authorize);
-    linear_layout.append(message_reset);
-    linear_layout.appendTo($("#task_list"));
-    $("#actionbar_tab a[href='#tab_list']").tab('show');
+    selectPane("pane_nolist");
 }
 
 function listTasks(tasks) {
-    $("#task_list").empty();
+    var task_list = $("#task_list");
+    task_list.empty();
     var autolinker = new Autolinker();
     for (j in tasks) {
         if (tasks[j].title == "") {
             continue;
         }
-        var item = $("<div class='linear_layout min_height'>");
+        var item = $("<li class='mdl-list__item mdl-list__item--two-line'>");
         item.attr("id", tasks[j].id);
 
-        var div_btns = $("<div class='btns'>");
-        div_btns.appendTo(item);
+        var primary_content = $("<span class='mdl-list__item-primary-content'>");
+        var item_text = $("<span class='mdl-list__item-sub-title'>");
+        item_text.html(autolinker.link(tasks[j].title));
+        primary_content.append(item_text);
+        item.append(primary_content);
 
-        var div_text = $("<div class='task_text'>");
-        var task_title = autolinker.link(tasks[j].title);
-        div_text.html(task_title).appendTo(item);
-
-        var btn_del = $("<a class='btn btn-default'>");
-        btn_del.append("<img src='images/delete.png' />");
+        var secondary_content = $("<span class='mdl-list__item-secondary-content'>");
+        var btn_del = $("<a class='mdl-list__item-secondary-action' href='#'>");
+        btn_del.append($("<i class='material-icons'>delete</i>"));
         btn_del.click(delete_item);
-        btn_del.appendTo(div_btns);
+        btn_del.appendTo(secondary_content);
+        secondary_content.appendTo(item);
 
-        item.appendTo($("#task_list"));
+        item.appendTo(task_list);
     }
-    $("#actionbar_tab a[href='#tab_list']").tab('show');
+    selectPane("pane_list");
 }
 
 function prepareHTMLTexts() {
-    $("a[href='#tab_list']").text(browser.i18n.getMessage("tab_list"));
-    $("a[href='#tab_about']").text(browser.i18n.getMessage("tab_about"));
+    $("#nav_list").text(browser.i18n.getMessage("tab_list"));
+    $("#nav_about").text(browser.i18n.getMessage("tab_about"));
     $("#btn_reset").text(browser.i18n.getMessage("reset_configuration"));
     var autolinker = new Autolinker();
     var message1_text = autolinker.link(browser.i18n.getMessage("about_message1"));
     var message2_text = autolinker.link(browser.i18n.getMessage("about_message2"));
-    $("<p>")
-        .html(message1_text)
-        .appendTo($("#about_message"));
-    $("<p>")
-        .html(message2_text)
-        .appendTo($("#about_message"));
+    $("#about_message1").html(message1_text);
+    $("#about_message2").html(message2_text);
+    $("#need_authorize_message").html(autolinker.link(browser.i18n.getMessage("needAuthorizeApp")));
+    $("#btn_reset_config").text(browser.i18n.getMessage("reset_configuration"));
 }
 
 $(document).ready(function () {
-    $("#actionbar_tab a").click(function (e) {
-        e.preventDefault();
-        $(this).tab('show');
-    });
+    initDrawer();
+    selectPane("pane_wait");
+    prepareHTMLTexts();
+
     $("#btn_refresh").click(function (e) {
         loadTasks();
     });
     $("#btn_reset").click(function (e) {
         reset_configuration();
     });
-    prepareHTMLTexts();
+    $("#btn_reset_config").click(function (e) {
+        reset_configuration();
+    });
     loadTasks();
 });

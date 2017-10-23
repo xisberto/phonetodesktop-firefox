@@ -12,10 +12,10 @@
         "description": "Message informing the user can reset the configuration"
     },
     "tab_list": {
-        "message": " View list"
+        "message": "View list"
     },
     "tab_about": {
-        "message": " About"
+        "message": "About"
     },
     "about_message1": {
         "message": "Phone To Desktop is a free (as in freedom) Android App. The source code is in https://github.com/xisberto/phonetodesktop."
