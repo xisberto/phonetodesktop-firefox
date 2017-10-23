@@ -51,6 +51,8 @@ a:hover {
 }
 
 .mdl-list__item--two-line {
+    height: auto;
+    min-height: 72px;
     border-top: thin solid #ccc;
 }
 
