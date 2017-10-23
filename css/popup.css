@@ -6,7 +6,8 @@
 body {
     font-family: "Roboto";
     width: 320px;
-    height: 640px;
+    height: 560px;
+    overflow-x: hidden;
 }
 
 .mdl-layout-title {
@@ -18,7 +19,7 @@ body {
 }
 
 a {
-    color: #669900;
+    color: rgb(76,175,80);
 }
 
 a:hover {
@@ -60,15 +61,23 @@ a:hover {
 	background: url(images/icon-mono-revert.png);
 }
 
+#main_content {
+    margin: 0px 8px;
+}
+
 #tab_wait {
 	text-align: center;
 	padding-top: 20px;
 }
 
-#pane_about p, #pane_about img {
+#pane_about > * {
 	display: block;
     margin: auto;
-    text-align: center;
+    padding: 8px 0px;
+}
+
+.mdl-button--raised.mdl-button--colored {
+    color: white;
 }
 
 #task_list {
