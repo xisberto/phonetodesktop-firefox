@@ -30,6 +30,11 @@ a:hover {
     color: #336600;
 }
 
+.mdl-list {
+    padding-top: 0px;
+    margin-top: -1px;
+}
+
 #pane_wait .mdl-spinner {
     display: block;
     margin: 16px auto;
@@ -54,27 +59,6 @@ a:hover {
     min-height: 36px;
     max-width: 80%;
     word-break: break-word;
-}
-
-.min_height {
-	min-height: 56px;
-}
-
-.linear_layout div {
-	display: table-cell;
-}
-
-.linear_layout .task_text {
-	width: 80%;
-}
-
-.linear_layout .btns {
-    float: right;
-	cursor: pointer;
-}
-
-.task_text.done {
-	text-decoration:line-through;
 }
 
 form span {

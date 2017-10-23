@@ -11,6 +11,7 @@
 
 <body>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
         <header class="mdl-layout__header">
             <div class="mdl-layout__header-row">
                 <span class="mdl-layout-title">PhoneToDesktop</span>
@@ -20,6 +21,7 @@
                 </button>
             </div>
         </header>
+
         <div class="mdl-layout__drawer">
             <nav class="mdl-navigation">
                 <a id="nav_list" class="mdl-navigation__link" href="#pane_list" data-l10n-id="nav_list"></a>
@@ -28,24 +30,31 @@
                 <a id="nav_nolist" class="mdl-navigation__link hidden" href="#pane_nolist" data-l10n-id="nav_nolist"></a>
             </nav>
         </div>
-        <main id="main_content" class="mdl-layout__content mdl-grid">
+
+        <main id="main_content" class="mdl-layout__content">
+
             <div class="mdl-layout__tab-panel is-active" id="pane_list">
                 <ul id="task_list" class="mdl-list"></ul>
             </div>
-            <div id="pane_about" class="mdl-layout__tab-panel">
+
+            <div id="pane_about" class="mdl-layout__tab-panel mdl-grid">
                 <img src="images/icon128.png" alt="Phone to Desktop" />
                 <p id="about_message1" />
                 <p id="about_message2" />
                 <p><button id="btn_reset" type="button" class="mdl-button mdl-button--raised mdl-button--colored"></p>
             </div>
+
             <div id="pane_wait" class="mdl-layout__tab-panel">
                 <div class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active"></div>
             </div>
-            <div id="pane_nolist" class="mdl-layout__tab-panel">
+
+            <div id="pane_nolist" class="mdl-layout__tab-panel mdl-grid">
                 <p id="need_authorize_message" />
                 <p><button type="button" id="btn_reset_config" class="mdl-button mdl-button--colored" /></p>
             </div>
+            
         </main>
+
     </div>
 
     <!-- Placed at the end of the document so the pages load faster -->
