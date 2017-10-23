@@ -155,5 +155,8 @@ $(document).ready(function () {
     $("#btn_reset").click(function (e) {
         reset_configuration();
     });
+    $("#btn_reset_config").click(function (e) {
+        reset_configuration();
+    });
     loadTasks();
 });
