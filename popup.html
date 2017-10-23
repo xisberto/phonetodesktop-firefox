@@ -3,76 +3,63 @@
 
 <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="bootstrap/css/bootstrap-theme.css" rel="stylesheet">
-    <link href="popup.css" rel="stylesheet">
-    <link href="loading.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="css/material.min.css" rel="stylesheet">
+    <link href="css/popup.css" rel="stylesheet">
+    <link href="css/loading.css" rel="stylesheet">
 </head>
 
 <body>
-    <section class="navbar navbar-default navbar-fixed-top">
-        <div class="container-fluid">
-            <ul id="actionbar_tab" class="nav navbar-nav" role="tablist">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                        <img src="images/menu.png" />
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li class="active hidden">
-                            <a aria-controls="wait" role="tab" data-toggle="tab" href="#tab_wait"></a>
-                        </li>
-                        <li>
-                            <a aria-controls="list" role="tab" data-toggle="tab" href="#tab_list">View list</a>
-                        </li>
-                        <li>
-                            <a aria-controls="about" role="tab" data-toggle="tab" href="#tab_about">About</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <div class="navbar-header">
-                <a class="navbar-brand" href="https://play.google.com/store/apps/details?id=net.xisberto.phonetodesktop" target="_blank">PhoneToDesktop</a>
-            </div>
-            <div class="">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="active">
-                        <a href="#" id="btn_refresh">
-                            <img src="images/refresh.png" />
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </section>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 
-    <section id="main_screen" class="container-fluid">
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="tab_wait">
-                <div class="loader">
-                    <svg class="circular">
-                        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
-                    </svg>
-                </div>
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <span class="mdl-layout-title">PhoneToDesktop</span>
+                <div class="mdl-layout-spacer"></div>
+                <button class="mdl-button mdl-button--icon" id="btn_refresh">
+                    <i class="material-icons">refresh</i>
+                </button>
             </div>
-            <div role="tabpanel" class="tab-pane" id="tab_list">
-                <div class="container-fluid" id="task_list">
-                </div>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="tab_about">
-                <p class="center">
-                    <img src="images/icon128.png">
-                </p>
-                <p class="center">
-                    <button class="btn" id="btn_reset"></button>
-                </p>
-                <div id="about_message"></div>
-            </div>
+        </header>
+
+        <div class="mdl-layout__drawer">
+            <nav class="mdl-navigation">
+                <a id="nav_list" class="mdl-navigation__link" href="#pane_list" data-l10n-id="nav_list"></a>
+                <a id="nav_about" class="mdl-navigation__link" href="#pane_about" data-l10n-id="nav_about"></a>
+                <a id="nav_wait" class="mdl-navigation__link hidden" href="#pane_wait" data-l10n-id="nav_wait"></a>
+                <a id="nav_nolist" class="mdl-navigation__link hidden" href="#pane_nolist" data-l10n-id="nav_nolist"></a>
+            </nav>
         </div>
-    </section>
+
+        <main id="main_content" class="mdl-layout__content">
+
+            <div class="mdl-layout__tab-panel is-active" id="pane_list">
+                <ul id="task_list" class="mdl-list"></ul>
+            </div>
+
+            <div id="pane_about" class="mdl-layout__tab-panel mdl-grid">
+                <img src="images/icon128.png" alt="Phone to Desktop" />
+                <p id="about_message1" />
+                <p id="about_message2" />
+                <p><button id="btn_reset" type="button" class="mdl-button mdl-button--raised mdl-button--colored"></p>
+            </div>
+
+            <div id="pane_wait" class="mdl-layout__tab-panel">
+                <div class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active"></div>
+            </div>
+
+            <div id="pane_nolist" class="mdl-layout__tab-panel mdl-grid">
+                <p id="need_authorize_message" />
+                <p><button type="button" id="btn_reset_config" class="mdl-button mdl-button--colored" /></p>
+            </div>
+            
+        </main>
+
+    </div>
 
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="bootstrap/js/jquery-2.1.4.min.js"></script>
-    <script src="bootstrap/js/bootstrap.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/material.min.js"></script>
     <script src="js/Autolinker.js"></script>
     <script src="popup.js"></script>
 
