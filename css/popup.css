@@ -69,9 +69,9 @@ a:hover {
     margin: 0px 8px;
 }
 
-#tab_wait {
-	text-align: center;
-	padding-top: 20px;
+#pane_wait .mdl-spinner {
+    display: block;
+    margin: 16px auto;
 }
 
 #pane_about > * {
