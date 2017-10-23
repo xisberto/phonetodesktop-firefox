@@ -18,6 +18,10 @@ body {
     color: white;
 }
 
+.mdl-button--icon {
+    color: white;
+}
+
 a {
     color: rgb(76,175,80);
 }

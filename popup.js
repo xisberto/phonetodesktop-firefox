@@ -54,7 +54,7 @@ function initDrawer() {
 }
 
 function loadTasks() {
-    $("#actionbar_tab a[href='#tab_wait']").tab('show');
+    selectPane("pane_wait");
     browser.runtime.getBackgroundPage((page) => {
         var list_id = page.getListID();
         if (list_id == null) {
@@ -101,23 +101,7 @@ function alertNoList() {
     // so we have not authorized and not fetched and stored list_id in localStore
     // $("#tab_wait").empty();
     $("#task_list").empty();
-    linear_layout = $("<div class='linear_layout min_height'>");
-    autolinker = new Autolinker();
-    message_authorize = $("<p>");
-    message_content = browser.i18n.getMessage("needAuthorizeApp");
-    message_content = autolinker.link(message_content);
-    message_authorize.append(message_content);
-    message_reset = $("<p>");
-    message_reset.text(browser.i18n.getMessage("needResetConf"));
-    button_reset = $("<a class='btn'>");
-    button_reset.text(browser.i18n.getMessage("reset_configuration"));
-    button_reset.click(reset_configuration);
-    message_reset.append(button_reset);
-
-    linear_layout.append(message_authorize);
-    linear_layout.append(message_reset);
-    linear_layout.appendTo($("#task_list"));
-    $("#actionbar_tab a[href='#tab_list']").tab('show');
+    selectPane("pane_nolist");
 }
 
 function listTasks(tasks) {
@@ -144,38 +128,32 @@ function listTasks(tasks) {
 
         item.appendTo($("#task_list"));
     }
-    $("#actionbar_tab a[href='#tab_list']").tab('show');
+    selectPane("pane_list");
 }
 
 function prepareHTMLTexts() {
-    $("a[href='#tab_list']").text(browser.i18n.getMessage("tab_list"));
-    $("a[href='#tab_about']").text(browser.i18n.getMessage("tab_about"));
+    $("#nav_list").text(browser.i18n.getMessage("tab_list"));
+    $("#nav_about").text(browser.i18n.getMessage("tab_about"));
     $("#btn_reset").text(browser.i18n.getMessage("reset_configuration"));
     var autolinker = new Autolinker();
     var message1_text = autolinker.link(browser.i18n.getMessage("about_message1"));
     var message2_text = autolinker.link(browser.i18n.getMessage("about_message2"));
-    $("<p>")
-        .html(message1_text)
-        .appendTo($("#about_message"));
-    $("<p>")
-        .html(message2_text)
-        .appendTo($("#about_message"));
+    $("#about_message1").html(message1_text);
+    $("#about_message2").html(message2_text);
+    $("#need_authorize_message").html(autolinker.link(browser.i18n.getMessage("needAuthorizeApp")));
+    $("#btn_reset_config").text(browser.i18n.getMessage("reset_configuration"));
 }
 
 $(document).ready(function () {
     initDrawer();
     selectPane("pane_wait");
+    prepareHTMLTexts();
 
-    $("#actionbar_tab a").click(function (e) {
-        e.preventDefault();
-        $(this).tab('show');
-    });
     $("#btn_refresh").click(function (e) {
         loadTasks();
     });
     $("#btn_reset").click(function (e) {
         reset_configuration();
     });
-    prepareHTMLTexts();
     loadTasks();
 });
