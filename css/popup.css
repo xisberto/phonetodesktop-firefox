@@ -30,45 +30,6 @@ a:hover {
     color: #336600;
 }
 
-.navbar {
-	margin: 0px 0px 0px;
-    border: none;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-}
-
-.navbar .container-fluid {
-    padding-left: 0px;
-}
-
-.navbar .brand {
-	padding-bottom: 0px;
-    color: #FFFFFF;
-    text-shadow: none;
-}
-
-.nav > li > a > img {
-	height: 24px;
-	vertical-align: middle;
-}
-
-.dropdown-menu {
-    height: 640px;
-    width: 280px;
-}
-
-.icon-mono {
-	background: url(images/icon-mono.png);
-}
-
-.dropdown-menu > li > a:hover > .icon-mono,
-.dropdown-menu > .active > a > .icon-mono {
-	background: url(images/icon-mono-revert.png);
-}
-
-#main_content {
-    margin: 0px 8px;
-}
-
 #pane_wait .mdl-spinner {
     display: block;
     margin: 16px auto;
@@ -84,26 +45,15 @@ a:hover {
     color: white;
 }
 
-#task_list {
-	list-style-type: none;
-    padding: 0px;
+.mdl-list__item--two-line {
+    border-top: thin solid #ccc;
 }
 
-#task_list .linear_layout {
-	border-bottom: thin solid #e4e4e4;
-	padding: 8px 0px;
-}
-
-#task_list .btn {
-	background: none;
-    border: none;
-    box-shadow: none;
-    border-radius: 0px;
-}
-
-#task_list .btn:hover {
-    border: none;
-    background: #E0E0E0;
+.mdl-list__item--two-line .mdl-list__item-primary-content {
+    height: auto ! important;
+    min-height: 36px;
+    max-width: 80%;
+    word-break: break-word;
 }
 
 .min_height {
@@ -116,7 +66,6 @@ a:hover {
 
 .linear_layout .task_text {
 	width: 80%;
-	word-break: break-word;
 }
 
 .linear_layout .btns {

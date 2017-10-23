@@ -105,28 +105,30 @@ function alertNoList() {
 }
 
 function listTasks(tasks) {
-    $("#task_list").empty();
+    var task_list = $("#task_list");
+    task_list.empty();
     var autolinker = new Autolinker();
     for (j in tasks) {
         if (tasks[j].title == "") {
             continue;
         }
-        var item = $("<div class='linear_layout min_height'>");
+        var item = $("<li class='mdl-list__item mdl-list__item--two-line'>");
         item.attr("id", tasks[j].id);
 
-        var div_btns = $("<div class='btns'>");
-        div_btns.appendTo(item);
+        var primary_content = $("<span class='mdl-list__item-primary-content'>");
+        var item_text = $("<span class='mdl-list__item-sub-title'>");
+        item_text.html(autolinker.link(tasks[j].title));
+        primary_content.append(item_text);
+        item.append(primary_content);
 
-        var div_text = $("<div class='task_text'>");
-        var task_title = autolinker.link(tasks[j].title);
-        div_text.html(task_title).appendTo(item);
-
-        var btn_del = $("<a class='btn btn-default'>");
-        btn_del.append("<img src='images/delete.png' />");
+        var secondary_content = $("<span class='mdl-list__item-secondary-content'>");
+        var btn_del = $("<a class='mdl-list__item-secondary-action' href='#'>");
+        btn_del.append($("<i class='material-icons'>delete</i>"));
         btn_del.click(delete_item);
-        btn_del.appendTo(div_btns);
+        btn_del.appendTo(secondary_content);
+        secondary_content.appendTo(item);
 
-        item.appendTo($("#task_list"));
+        item.appendTo(task_list);
     }
     selectPane("pane_list");
 }
